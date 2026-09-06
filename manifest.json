@@ -1,19 +1,25 @@
 {
   "name": "Snake Game",
   "short_name": "Snake",
-  "description": "Classic Snake Game with touch controls and high score tracking",
-  "start_url": "/snake-game/",
-  "scope": "/snake-game/",
+  "description": "Classic Snake Game with smooth touch controls and high score",
+  "start_url": "https://arjunsingh-dev7.github.io/snake-game/",
+  "scope": "https://arjunsingh-dev7.github.io/snake-game/",
   "display": "standalone",
   "background_color": "#0a0d0a",
   "theme_color": "#22c55e",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/528/528098.png",
+      "src": "https://arjunsingh-dev7.github.io/snake-game/icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "https://arjunsingh-dev7.github.io/snake-game/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
