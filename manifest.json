@@ -1,12 +1,12 @@
 {
-  "name": "Snake Game",
+  "name": "Snake Arena",
   "short_name": "Snake",
-  "description": "Classic Snake Game with smooth touch controls and high score",
+  "description": "Competitive Snake Game with custom gaming logo and sound",
   "start_url": "https://arjunsingh-dev7.github.io/snake-game/",
   "scope": "https://arjunsingh-dev7.github.io/snake-game/",
   "display": "standalone",
-  "background_color": "#0a0d0a",
-  "theme_color": "#22c55e",
+  "background_color": "#0d1117",
+  "theme_color": "#238636",
   "orientation": "portrait",
   "icons": [
     {
