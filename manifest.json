@@ -1,7 +1,7 @@
 {
   "name": "Snake Game",
   "short_name": "Snake",
-  "description": "Classic Snake Game with smooth touch controls",
+  "description": "Classic Snake Game with touch controls and high score tracking",
   "start_url": "/snake-game/",
   "scope": "/snake-game/",
   "display": "standalone",
@@ -10,10 +10,10 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/snake-game/icon.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/528/528098.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
