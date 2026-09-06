@@ -1,7 +1,7 @@
 {
-  "name": "Snake Pro",
+  "name": "Snake Game",
   "short_name": "Snake",
-  "description": "Classic Snake Game with touch controls and high score tracking",
+  "description": "Classic Snake Game with smooth touch controls",
   "start_url": "/snake-game/",
   "scope": "/snake-game/",
   "display": "standalone",
@@ -10,10 +10,10 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "/snake-game/icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
