@@ -341,6 +341,7 @@
     // Initial Screen
     reset();
     document.getElementById("overlay").style.display = "flex";
+if ("serviceWorker" in navigator) { navigator.serviceWorker.register("sw.js"); }
   </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 {
   "name": "Snake Pro",
   "short_name": "Snake",
+  "description": "Classic Snake Game with touch controls and high score tracking",
   "start_url": "/snake-game/",
   "scope": "/snake-game/",
   "display": "standalone",
@@ -9,7 +10,7 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/arjunsingh-dev7/snake-game/main/icon.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
