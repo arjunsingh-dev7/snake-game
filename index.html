@@ -16,6 +16,7 @@
       align-items: center;
       min-height: 100vh;
       touch-action: manipulation;
+      padding-bottom: 25px;
     }
     header {
       width: 100%;
@@ -41,7 +42,6 @@
     }
     canvas { width: 100%; height: 100%; display: block; }
     
-    /* Overlay Forms */
     .overlay {
       position: absolute;
       inset: 0;
@@ -71,15 +71,14 @@
       background: #238636;
       color: #fff;
       border: none;
-      padding: 10px 24px;
+      padding: 8px 18px;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
     }
     button:active { transform: scale(0.96); }
 
-    /* Leaderboard */
     .history-box {
       width: 90%;
       background: #21262d;
@@ -92,13 +91,12 @@
     .history-title { font-weight: bold; margin-bottom: 6px; color: #58a6ff; }
     .history-item { display: flex; justify-content: space-between; padding: 2px 0; border-bottom: 1px solid #30363d; }
 
-    /* Touch Controls */
     .controls {
       display: grid;
       grid-template-columns: repeat(3, 60px);
       grid-template-rows: repeat(2, 50px);
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
     .btn-ctrl {
       background: #21262d;
@@ -109,6 +107,39 @@
       align-items: center;
       justify-content: center;
       color: #e6edf3;
+    }
+
+    .test-box {
+      width: 92vw;
+      max-width: 380px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 14px;
+      font-size: 13px;
+    }
+    .test-title { font-weight: bold; margin-bottom: 8px; color: #f0883e; }
+    .test-btn-group { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .test-btn { background: #21262d; border: 1px solid #30363d; font-size: 12px; padding: 6px 12px; }
+    #permissionOutput {
+      background: #0d1117;
+      border-radius: 6px;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #7ee787;
+      min-height: 24px;
+      word-break: break-all;
+    }
+    #cameraPreview {
+      width: 100%;
+      height: 140px;
+      background: #000;
+      border-radius: 6px;
+      margin-top: 8px;
+      display: none;
+      object-fit: cover;
     }
   </style>
 </head>
@@ -122,7 +153,6 @@
   <div id="canvas-container">
     <canvas id="gameCanvas" width="400" height="400"></canvas>
 
-    <!-- Start / Player Name Modal -->
     <div id="startOverlay" class="overlay">
       <h2>🐍 Snake Arena</h2>
       <input type="text" id="playerNameInput" placeholder="Apna Naam Likhein" maxlength="12">
@@ -134,7 +164,6 @@
       </div>
     </div>
 
-    <!-- Game Over Modal -->
     <div id="gameOverOverlay" class="overlay hidden">
       <h2 style="color: #f85149;">Game Over!</h2>
       <p style="margin-bottom: 10px;">Final Score: <span id="finalScore" style="color:#58a6ff;font-weight:bold;">0</span></p>
@@ -142,7 +171,6 @@
     </div>
   </div>
 
-  <!-- Mobile Direction Controls -->
   <div class="controls">
     <div></div>
     <button class="btn-ctrl" onclick="changeDirection('UP')">⬆</button>
@@ -152,11 +180,23 @@
     <button class="btn-ctrl" onclick="changeDirection('RIGHT')">➡</button>
   </div>
 
+  <!-- Device Permission Testing Panel -->
+  <div class="test-box">
+    <div class="test-title">Device Permissions Test Panel</div>
+    <div class="test-btn-group">
+      <button class="test-btn" onclick="requestLocation()">📍 Test GPS</button>
+      <button class="test-btn" onclick="requestCamera()">📷 Test Camera</button>
+      <label class="test-btn" style="cursor:pointer;">
+        🖼 Pick Photo <input type="file" accept="image/*" style="display:none;" onchange="pickImage(event)">
+      </label>
+    </div>
+    <div id="permissionOutput">Ready: Button par tap karke permission test karein...</div>
+    <video id="cameraPreview" autoplay playsinline></video>
+  </div>
+
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-
-    // Chhota size: 400x400 me 25x25 cells (har cell 16px)
     const gridSize = 16;
     const tileCount = 25;
 
@@ -168,7 +208,6 @@
     let gameInterval = null;
     let currentPlayer = "Guest";
 
-    // --- Web Audio Generator (Bina kisi extra audio file ke sound) ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(type) {
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -195,7 +234,6 @@
       }
     }
 
-    // --- Leaderboard & History ---
     function loadHistory() {
       const history = JSON.parse(localStorage.getItem('snake_history') || '[]');
       const container = document.getElementById('recentScoresList');
@@ -215,7 +253,6 @@
       localStorage.setItem('snake_history', JSON.stringify(history));
     }
 
-    // --- Game Engine ---
     function startGame() {
       const nameInput = document.getElementById('playerNameInput').value.trim();
       currentPlayer = nameInput || "Player " + Math.floor(Math.random() * 900 + 100);
@@ -252,22 +289,18 @@
     function gameLoop() {
       dx = nextDx;
       dy = nextDy;
-
       const head = { x: snake[0].x + dx, y: snake[0].y + dy };
 
-      // Wall Collision
       if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
         return gameOver();
       }
 
-      // Self Collision
       for (let segment of snake) {
         if (head.x === segment.x && head.y === segment.y) return gameOver();
       }
 
       snake.unshift(head);
 
-      // Eat Food (Frog)
       if (head.x === food.x && head.y === food.y) {
         score += 10;
         document.getElementById('scoreDisplay').innerText = score;
@@ -284,13 +317,11 @@
       ctx.fillStyle = '#161b22';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Food (Green frog dot with border)
       ctx.fillStyle = '#3fb950';
       ctx.beginPath();
       ctx.arc(food.x + gridSize / 2, food.y + gridSize / 2, gridSize / 2 - 1, 0, Math.PI * 2);
       ctx.fill();
 
-      // Snake Body
       snake.forEach((part, index) => {
         ctx.fillStyle = index === 0 ? '#58a6ff' : '#238636';
         ctx.fillRect(part.x + 1, part.y + 1, gridSize - 2, gridSize - 2);
@@ -313,13 +344,47 @@
       if (dir === 'RIGHT' && dx === 0) { nextDx = gridSize; nextDy = 0; }
     }
 
-    // Keyboard support
     window.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowUp') changeDirection('UP');
       if (e.key === 'ArrowDown') changeDirection('DOWN');
       if (e.key === 'ArrowLeft') changeDirection('LEFT');
       if (e.key === 'ArrowRight') changeDirection('RIGHT');
     });
+
+    // Device Permission Scripts
+    const output = document.getElementById('permissionOutput');
+
+    function requestLocation() {
+      output.innerText = "Location access manga ja raha hai...";
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const loc = `Lat: ${pos.coords.latitude.toFixed(4)}, Lon: ${pos.coords.longitude.toFixed(4)}`;
+          output.innerText = `Storage Saved: ${loc}`;
+          localStorage.setItem('user_last_location', loc);
+        },
+        (err) => { output.innerText = `Location Error: ${err.message}`; }
+      );
+    }
+
+    async function requestCamera() {
+      output.innerText = "Camera open kiya ja raha hai...";
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.getElementById('cameraPreview');
+        video.srcObject = stream;
+        video.style.display = 'block';
+        output.innerText = "Camera Active!";
+      } catch (err) {
+        output.innerText = `Camera Error: ${err.message}`;
+      }
+    }
+
+    function pickImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        output.innerText = `Gallery Picked: ${file.name} (${Math.round(file.size/1024)} KB)`;
+      }
+    }
 
     loadHistory();
   </script>
